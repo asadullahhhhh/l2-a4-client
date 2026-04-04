@@ -2,9 +2,7 @@
 
 import { Book, Menu, Sunset, Trees, Zap } from "lucide-react";
 
-import {
-  Accordion,
-} from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -22,6 +20,8 @@ import {
 import { cn } from "@/lib/utils";
 import { ModeToggle } from "../provider/theme-toggole";
 import Link from "next/link";
+import { useState } from "react";
+import { DropdownMenuIcons } from "../provider/navbar-user-dropdown";
 
 interface MenuItem {
   title: string;
@@ -61,43 +61,44 @@ const Navbar = ({
     title: "Foodhub",
   },
   menu = [
-    { 
-      title: "Home", 
-      url: "/" 
+    {
+      title: "Home",
+      url: "/",
     },
     {
-      title: "Menus",
-      url: "/menus",
+      title: "Meals",
+      url: "/meals",
     },
     {
       title: "Providers",
       url: "/providers",
-    }
+    },
   ],
   auth = {
     login: { title: "Login", url: "/login" },
     signup: { title: "Sign up", url: "/signup" },
   },
   className,
-}: Navbar1Props) => {
+  session,
+}: Navbar1Props & { session: { data: any; error: any } }) => {
+
+  const userImage =
+    session.data?.user?.image ||
+    "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
+
   return (
     <section className={cn("py-4", className)}>
-      <div className="container mx-auto">
+      <div className="container max-w-6xl mx-auto px-5">
         {/* Desktop Menu */}
         <nav className="hidden items-center justify-between lg:flex">
           <div className="flex items-center gap-6">
             {/* Logo */}
             <Link href={logo.url} className="flex items-center gap-2">
-              <img
-                src={logo.src}
-                className="max-h-8"
-                alt={logo.alt}
-              />
+              <img src={logo.src} className="max-h-8" alt={logo.alt} />
               <span className="text-lg font-semibold tracking-tighter">
                 {logo.title}
               </span>
             </Link>
-            
           </div>
           <div>
             <div className="flex items-center">
@@ -112,12 +113,20 @@ const Navbar = ({
             <div>
               <ModeToggle></ModeToggle>
             </div>
-            <Button asChild variant="outline" size="sm">
-              <Link href={auth.login.url}>{auth.login.title}</Link>
-            </Button>
-            <Button asChild size="sm">
-              <Link href={auth.signup.url}>{auth.signup.title}</Link>
-            </Button>
+            {session.data ? (
+              <div>
+                <DropdownMenuIcons image={userImage}></DropdownMenuIcons>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <Button asChild variant="outline" size="sm">
+                  <Link href={auth.login.url}>{auth.login.title}</Link>
+                </Button>
+                <Button asChild size="sm">
+                  <Link href={auth.signup.url}>{auth.signup.title}</Link>
+                </Button>
+              </div>
+            )}
           </div>
         </nav>
 
@@ -134,12 +143,16 @@ const Navbar = ({
             </Link>
             <Sheet>
               <SheetTrigger asChild>
-                
-                <div className="gap-2 flex">
+                <div className="gap-3 flex">
+                  {
+                    session.data ? (
+                      <DropdownMenuIcons image={userImage}></DropdownMenuIcons>
+                    ) : (null)
+                  }
                   <ModeToggle></ModeToggle>
                   <Button variant="outline" size="icon">
-                  <Menu className="size-4" />
-                </Button>
+                    <Menu className="size-4" />
+                  </Button>
                 </div>
               </SheetTrigger>
               <SheetContent className="overflow-y-auto">
@@ -164,14 +177,21 @@ const Navbar = ({
                   </Accordion>
 
                   <div className="flex flex-col gap-3">
-                    <div>
-                    </div>
-                    <Button asChild variant="outline">
-                      <Link href={auth.login.url}>{auth.login.title}</Link>
-                    </Button>
-                    <Button asChild>
-                      <Link href={auth.signup.url}>{auth.signup.title}</Link>
-                    </Button>
+                    {session.data ? (
+                      <div></div>
+                    ) : (
+                      <div>
+                        <div></div>
+                        <Button asChild variant="outline">
+                          <Link href={auth.login.url}>{auth.login.title}</Link>
+                        </Button>
+                        <Button asChild>
+                          <Link href={auth.signup.url}>
+                            {auth.signup.title}
+                          </Link>
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </SheetContent>
@@ -191,9 +211,7 @@ const renderMenuItem = (item: MenuItem) => {
         asChild
         className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-accent-foreground"
       >
-        <Link href={item.url}>
-        {item.title}
-        </Link>
+        <Link href={item.url}>{item.title}</Link>
       </NavigationMenuLink>
     </NavigationMenuItem>
   );
@@ -206,6 +224,5 @@ const renderMobileMenuItem = (item: MenuItem) => {
     </a>
   );
 };
-
 
 export { Navbar };

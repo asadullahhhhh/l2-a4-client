@@ -1,9 +1,11 @@
 import { Navbar } from "@/components/shared/navbar";
+import { userService } from "@/service/user.service";
 
-const CommonLayout = ({ children }: { children: React.ReactNode }) => {
+const CommonLayout = async({ children }: { children: React.ReactNode }) => {
+    const session = await userService.getSession()
     return (
         <div>  
-            <Navbar></Navbar>
+            <Navbar session={session}></Navbar>
             {children}
         </div>
     );
