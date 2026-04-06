@@ -58,7 +58,6 @@ export function SignupForm({
         }
 
         toast.success("Account created successfully!", { id: toastId });
-        console.log(data);
         if(data) {
           router.replace("/")
         }

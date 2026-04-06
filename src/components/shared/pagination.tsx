@@ -22,8 +22,6 @@ export function PaginationDemo({ meta }: { meta: PaginationDemoProps }) {
   const { limit, page: currentPage, totalItems, totalPage } = meta;
   const pages = Array.from({ length: totalPage }, (_, i) => i + 1);
 
-  console.log({ limit, currentPage, totalItems, totalPage });
-
   const searchParams = useSearchParams();
   const router = useRouter();
 

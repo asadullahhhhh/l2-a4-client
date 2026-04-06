@@ -57,7 +57,6 @@ export function LoginForm({
         }
 
         toast.success("Logged in successfully!", { id: toastId });
-        console.log(data);
         if(data) {
           router.replace(callbackUrl)
         }
