@@ -54,12 +54,12 @@ const MenuPage = async ({
     categoryPromise,
   ]);
 
-  const meals = mealData.data;
+  const meals = mealData.data
 
   return (
     <div className="p-4">
       <div className="flex gap-3 flex-col mx-auto md:flex-row justify-center items-center mb-10">
-        <div className="flex gap-3 justify-center items-center ">
+        <div className="flex gap-3 justify-center items-center">
           <SelectDemo categories={categoryData.data}></SelectDemo>
           <MealFilterSelect></MealFilterSelect>
         </div>
