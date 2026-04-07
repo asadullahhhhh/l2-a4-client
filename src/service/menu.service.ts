@@ -139,9 +139,90 @@ const createOrder = async (payload: OrderPayload) => {
   }
 }
 
+const isBookMark = async (id: string) => {
+  try {
+    const cookieStore = await cookies();
+    const response = await fetch(`${env.BACKEND_URL}/api/v1/cartItem/isAddCart/${id}`, {
+      headers: {
+        Cookie: cookieStore.toString()
+      }
+    })
+
+    const data = await response.json();
+
+    if(!data.success) {
+        return {
+            data: null,
+            error: {
+                message: data.message || "Failed to check the meal bookmark status."
+            }
+        }
+    }
+
+    return {
+        data,
+        error: null
+    }
+  } catch (error: any) {
+    return {
+      data: null,
+      error: {
+        message: error.message || "An error occurred while meal bookmarking." ,
+      },
+    }
+  }
+}
+
+const addCart = async (mealId: string, price: string, provider_id: string, image_url: string, name: string) => {
+  try {
+    const cookieStore = await cookies();
+
+    const response = await fetch(`${env.BACKEND_URL}/api/v1/cartItem`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString()
+      },
+      body: JSON.stringify({
+        meal_id: mealId,
+        price,
+        provider_id,
+        image_url,
+        name
+      })
+    })
+
+    const data = await response.json();
+
+    if(!response.ok) {
+      const data = await response.json();
+      return {
+        data: null,
+        error: {
+          message: data.message || "Failed to add the meal to cart."
+        }
+      }
+    }
+
+    return {
+      data,
+      error: null
+    }
+  } catch (error) {
+      return {
+        data: null,
+        error: {
+          message: "An error occurred while adding the meal to cart.",
+        },
+      };
+  }
+}
+
 export const menuService = {
   getMenus,
   getCategories,
   getMealById,
-  createOrder
+  createOrder,
+  isBookMark,
+  addCart
 };

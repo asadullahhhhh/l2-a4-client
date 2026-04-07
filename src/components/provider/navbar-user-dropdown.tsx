@@ -1,26 +1,22 @@
 import {
-  CreditCardIcon,
+  ShoppingCart,
   LogOutIcon,
-  SettingsIcon,
   UserIcon,
-} from "lucide-react"
-
-import { Button } from "@/components/ui/button"
+  CreditCard,
+} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import Link from "next/link"
-import { authClient } from "@/lib/auth-client"
-import { useRouter } from "next/navigation"
-import { toast } from "sonner"
+} from "@/components/ui/dropdown-menu";
+import Link from "next/link";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
-export function DropdownMenuIcons({image}: {image?: string}) {
-
-    const router = useRouter()
+export function DropdownMenuIcons({ image }: { image?: string }) {
+  const router = useRouter();
 
   return (
     <DropdownMenu>
@@ -33,26 +29,31 @@ export function DropdownMenuIcons({image}: {image?: string}) {
           Profile
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <CreditCardIcon />
-          Billing
+          <Link href={"/cart"} className="flex gap-3 w-full">
+            <ShoppingCart></ShoppingCart>
+            Cart
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href={"/menus"} className="flex gap-2">
-          <SettingsIcon />
-          Settings
+          <Link href={"/orders"} className="flex gap-2">
+            <CreditCard />
+            Orders
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem variant="destructive" onClick={async () => {
-            await authClient.signOut()
-            router.refresh()
-        }}>
+        <DropdownMenuItem
+          variant="destructive"
+          onClick={async () => {
+            await authClient.signOut();
+            router.refresh();
+          }}
+        >
           <Link href={"/"} className="flex gap-2 items-center justify-center">
-          <LogOutIcon />
-          Log out
+            <LogOutIcon />
+            Log out
           </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

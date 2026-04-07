@@ -10,13 +10,18 @@ const MealDetailsPage = async ({
 }) => {
   const { id } = await params;
 
-  const { data } = await menuService.getMealById(id);
+  const mealPromise =  menuService.getMealById(id);
   const {data: session} = await userService.getSession()
+  const bookmarkPromise = await menuService.isBookMark(id)
+
+  const [{data}, bookMark] = await Promise.all([mealPromise, bookmarkPromise])
+
+  const isBookMark = bookMark.data.data;
 
   const meal = data;
 
   return (
-    <MealDetails meal={meal} session={session}></MealDetails>
+    <MealDetails meal={meal} session={session} isBookMark={isBookMark}></MealDetails>
   );
 };
 

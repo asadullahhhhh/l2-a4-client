@@ -55,6 +55,7 @@ const MenuPage = async ({
   ]);
 
   const meals = mealData.data
+  console.log(meals);
 
   return (
     <div className="p-4">

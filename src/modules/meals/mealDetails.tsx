@@ -8,19 +8,43 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { CheckoutButton } from "./checkoutButton";
+import { toast } from "sonner";
+import { createBookMark } from "@/actions/menu.action";
 
-const MealDetails = ({meal, session} : {meal: any, session: any}) => {
-    const handelOrder = () => {
-        if(!session) {
-            return redirect("/login")
-        }
-
-        console.log("session ache");
+const MealDetails = ({
+  meal,
+  session,
+  isBookMark,
+}: {
+  meal: any;
+  session: any;
+  isBookMark: boolean;
+}) => {
+  const handelBookMark = async () => {
+    const toastId = toast.loading("Adding meal to cart...");
+    if (!session) {
+      redirect("/login");
     }
 
-  return (
-   <div className="max-w-6xl mx-auto p-6 space-y-8">
+    if (isBookMark) {
+      toast.info("Meal is already in the cart.", {
+        id: toastId,
+      });
+      return;
+    }else {
+      const data = await createBookMark(meal.id, meal.price, meal.provider_id, meal.image_url, meal.name);
+      if(data?.data?.success) {
+        toast.success("Meal added to cart successfully.", {
+          id: toastId,
+        });
+      }
+    }
 
+    
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto p-6 space-y-8">
       {/* ================= PROVIDER ================= */}
       <Card className="p-6 flex items-center gap-4">
         <Avatar className="h-30 w-30">
@@ -35,15 +59,12 @@ const MealDetails = ({meal, session} : {meal: any, session: any}) => {
           <p className="text-sm text-muted-foreground">
             {meal.provider.address}
           </p>
-          <p className="text-xs text-muted-foreground">
-            {meal.provider.phone}
-          </p>
+          <p className="text-xs text-muted-foreground">{meal.provider.phone}</p>
         </div>
       </Card>
 
       {/* ================= MEAL HERO ================= */}
       <div className="grid md:grid-cols-2 gap-8">
-
         {/* IMAGE */}
         <div className="relative h-[320px] w-full rounded-xl overflow-hidden">
           <Image
@@ -63,9 +84,7 @@ const MealDetails = ({meal, session} : {meal: any, session: any}) => {
 
           <p className="text-muted-foreground">{meal.description}</p>
 
-          <div className="text-2xl font-bold text-primary">
-            ${meal.price}
-          </div>
+          <div className="text-2xl font-bold text-primary">${meal.price}</div>
 
           {/* BADGES */}
           <div className="flex flex-wrap gap-2">
@@ -79,7 +98,11 @@ const MealDetails = ({meal, session} : {meal: any, session: any}) => {
           {/* ACTION BUTTONS */}
           <div className="flex flex-col gap-3 pt-4">
             <CheckoutButton mealId={meal.id} providerId={meal.provider.id} />
-            <Button variant="outline" className="w-full">
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => handelBookMark()}
+            >
               Add to Cart
             </Button>
           </div>
@@ -91,9 +114,7 @@ const MealDetails = ({meal, session} : {meal: any, session: any}) => {
       {/* ================= DETAILS ================= */}
       <Card className="p-6 space-y-3">
         <h2 className="text-xl font-semibold">Meal Details</h2>
-        <p className="text-muted-foreground">
-          {meal.description}
-        </p>
+        <p className="text-muted-foreground">{meal.description}</p>
       </Card>
 
       {/* ================= REVIEWS ================= */}
@@ -110,9 +131,7 @@ const MealDetails = ({meal, session} : {meal: any, session: any}) => {
                 </span>
               </div>
 
-              <p className="text-sm text-muted-foreground">
-                {review.comment}
-              </p>
+              <p className="text-sm text-muted-foreground">{review.comment}</p>
             </Card>
           ))
         ) : (
@@ -120,7 +139,7 @@ const MealDetails = ({meal, session} : {meal: any, session: any}) => {
         )}
       </div>
     </div>
-    )
-}
+  );
+};
 
 export default MealDetails;
