@@ -35,7 +35,7 @@ export function DropdownMenuIcons({ image }: { image?: string }) {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href={"/orders"} className="flex gap-2">
+          <Link href={"/orders"} className="flex gap-2 w-full">
             <CreditCard />
             Orders
           </Link>
