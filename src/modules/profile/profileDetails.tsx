@@ -14,6 +14,9 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
+import { updateProfile } from "@/actions/profile.action";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 /* ================= VALIDATION ================= */
 const profileSchema = z.object({
@@ -23,6 +26,8 @@ const profileSchema = z.object({
 
 /* ================= COMPONENT ================= */
 export default function ProfileDetailsPage({ user }: { user: any }) {
+  const router = useRouter();
+
   const [open, setOpen] = useState(false);
 
   /* ================= FORM ================= */
@@ -35,12 +40,28 @@ export default function ProfileDetailsPage({ user }: { user: any }) {
       onSubmit: profileSchema,
     },
     onSubmit: async ({ value }) => {
-      const updatedData: { name?: string; image?: string } = {};
-      if (value.name) updatedData.name = value.name;
-      if (value.image) updatedData.image = value.image;
+      const toastId = toast.loading("Updating profile...");
+      try {
+        const updatedData: { name?: string; image?: string } = {};
+        if (value.name) updatedData.name = value.name;
+        if (value.image) updatedData.image = value.image;
 
-      console.log("UPDATED DATA:", updatedData);
-      setOpen(false);
+        const { data, error } = await updateProfile(updatedData);
+
+        if (data) {
+          toast.success("Profile updated successfully!", { id: toastId });
+          setOpen(false);
+          router.refresh();
+
+          return;
+        }
+
+        toast.error(error!.message || "Failed to update profile", {
+          id: toastId,
+        });
+      } catch (error) {
+        toast.error("Failed to update profile", { id: toastId });
+      }
     },
   });
 
@@ -56,10 +77,12 @@ export default function ProfileDetailsPage({ user }: { user: any }) {
         </Avatar>
 
         <div className="flex-1">
-          <h2 className="text-xl font-semibold">{user.name}</h2>
-          <p className="text-sm text-muted-foreground">{user.email}</p>
+          <h2 className="text-xl flex items-center justify-center font-semibold">
+            {user.name}
+          </h2>
+          <p className="text-sm text-muted-foreground flex justify-center items-center">{user.email}</p>
 
-          <div className="flex gap-2 mt-2">
+          <div className="flex gap-2 mt-2 justify-center items-center">
             <span className="text-xs px-2 py-1 rounded bg-green-100 text-green-600">
               {user.status}
             </span>

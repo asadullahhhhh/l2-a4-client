@@ -7,14 +7,14 @@ const profileDetails = async () => {
     const cookieStore = await cookies();
 
     const response = await fetch(`${env.BACKEND_URL}/api/v1/profile/details`, {
-        headers: {
-            "Content-Type": "application/json",
-            Cookie: cookieStore.toString(),
-        },
-        next: {
-            tags: ["profile"],
-        }
-    })
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      next: {
+        tags: ["profile"],
+      },
+    });
 
     const data = await response.json();
 
@@ -41,46 +41,46 @@ const profileDetails = async () => {
   }
 };
 
-const updateProfile = async (value: {name?: string; image?: string}) => {
-    try {
-        const cookieStore = await cookies();
+const updateProfile = async (value: { name?: string; image?: string }) => {
+  try {
+    const cookieStore = await cookies();
 
-        const response = await fetch(`${env.BACKEND_URL}/api/v1/profile/update`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Cookie: cookieStore.toString(),
-            },
-            body: JSON.stringify(value),
-        })
+    const response = await fetch(`${env.BACKEND_URL}/api/v1/profile/update`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      body: JSON.stringify(value),
+    });
 
-        const data = await response.json();
+    const data = await response.json();
 
-        if (!response.ok) {
-            revalidateTag("profile", "max");
-            return {
-                data: null,
-                error: {
-                    message: data.message || "Failed to update profile",
-                },
-            }
-        }
-
-        return {
-            data,
-            error: null,
-        }
-    } catch (error) {
-        return {
-            data: null,
-            error: {
-                message: "Failed to update profile",
-            },
-        }
+    if (!response.ok) {
+      return {
+        data: null,
+        error: {
+          message: data.message || "Failed to update profile",
+        },
+      };
     }
-}
+    revalidateTag("profile", "max");
+
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "Failed to update profile",
+      },
+    };
+  }
+};
 
 export const profileService = {
-    profileDetails,
-    updateProfile,
-}
+  profileDetails,
+  updateProfile,
+};

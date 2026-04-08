@@ -21,7 +21,7 @@ export function DropdownMenuIcons({ image }: { image?: string }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <img className="h-7.5 w-7.5 rounded-full" src={image} alt="" />
+        <img className="h-7.5 w-7.5 rounded-full object-cover" src={image} alt="" />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
