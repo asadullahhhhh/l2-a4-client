@@ -33,6 +33,7 @@ export function CheckoutButton({
   mealId: string;
   providerId: string;
 }) {
+
   const form = useForm({
     defaultValues: {
       quantity: 1,
@@ -59,7 +60,13 @@ export function CheckoutButton({
         if (response.data.success) {
           toast.success("Order confirmed successfully!", { id: toastId });
           setOpen(false);
+          return
         }
+
+        toast.error("Failed to confirm order. Please try again.", {
+          id: toastId,
+        });
+        setOpen(false);
       } catch (error: any) {
         toast.error(error.message || "Failed to create order.", {
           id: toastId,
@@ -153,7 +160,7 @@ export function CheckoutButton({
                   }}
                 ></form.Field>
 
-                <Button type="submit">Sign Up</Button>
+                <Button type="submit">Confirm Order</Button>
               </FieldGroup>
             </form>
           </div>

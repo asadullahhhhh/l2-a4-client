@@ -25,8 +25,10 @@ export function DropdownMenuIcons({ image }: { image?: string }) {
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuItem>
-          <UserIcon />
+          <Link href={"/profile"} className="flex gap-3 w-full">
+            <UserIcon />
           Profile
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
           <Link href={"/cart"} className="flex gap-3 w-full">
@@ -35,7 +37,7 @@ export function DropdownMenuIcons({ image }: { image?: string }) {
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>
-          <Link href={"/orders"} className="flex gap-2 w-full">
+          <Link href={"/orders"} className="flex gap-3 w-full">
             <CreditCard />
             Orders
           </Link>
