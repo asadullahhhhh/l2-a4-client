@@ -17,7 +17,7 @@ const filters = [
   { label: "Gluten Free", value: "is_gluten_free" },
 ];
 
-export function MealFilterSelect() {
+export function MealFilterSelect( { startTransition }: { startTransition: (fn: () => void) => void }) {
   const router = useRouter();
 
   return (
@@ -27,7 +27,9 @@ export function MealFilterSelect() {
 
         params.set(key, "true"); // 🔥 dynamic key
 
-        router.push(`?${params.toString()}`);
+        startTransition(() => {
+          router.push(`?${params.toString()}`);
+        })
       }}
     >
       <SelectTrigger className="w-full max-w-48">

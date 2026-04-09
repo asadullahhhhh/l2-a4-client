@@ -19,11 +19,13 @@ type Category = {
   updated_at: string;
 };
 
-export function SelectDemo({ categories }: { categories: Category[] }) {
+export function SelectDemo({ categories, startTransition }: { categories: Category[]; startTransition: (fn: () => void) => void }) {
     const router = useRouter()
   return (
     <Select onValueChange={(e) => {
-        router.push(`?${new URLSearchParams({category_id: e}).toString()}`)
+        startTransition(() => {
+            router.push(`?${new URLSearchParams({category_id: e}).toString()}`)
+        })
     }}>
       <SelectTrigger className="w-full max-w-48">
         <SelectValue placeholder="Select a category" />

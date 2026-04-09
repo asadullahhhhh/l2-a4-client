@@ -15,7 +15,7 @@ const priceRanges = [
   { label: "100+", min: 100, max: 1000 },
 ];
 
-export function PriceFilterSelect() {
+export function PriceFilterSelect( { startTransition }: { startTransition: (fn: () => void) => void }) {
   const router = useRouter();
   const searchParams = useSearchParams()
 
@@ -31,7 +31,9 @@ export function PriceFilterSelect() {
         params.set("min_price", String(selected.min));
         params.set("max_price", String(selected.max));
 
-        router.push(`?${params.toString()}`);
+        startTransition(() => {
+          router.push(`?${params.toString()}`);
+        });
       }}
     >
       <SelectTrigger className="w-full max-w-48">
