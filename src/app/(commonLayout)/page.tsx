@@ -1,5 +1,6 @@
 import { MealCard } from "@/components/shared/meal-card";
 import Banner from "@/modules/home/bannerSlider";
+import WhyChooseUs from "@/modules/home/chooseUsSection";
 import { ProviderCard } from "@/modules/providers/providerCard";
 import { homeService } from "@/service/home.service";
 import { Meal } from "@/types/meal.type";
@@ -50,6 +51,11 @@ export default async function Home() {
           ))
         }
         </div>
+      </div>
+
+      {/*  */}
+      <div className="my-30">
+        <WhyChooseUs></WhyChooseUs>
       </div>
     </div>
   
