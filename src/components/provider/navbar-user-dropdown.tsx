@@ -1,8 +1,11 @@
+"use client";
+
 import {
   ShoppingCart,
   LogOutIcon,
   UserIcon,
   CreditCard,
+  LayoutDashboard,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -14,20 +17,40 @@ import {
 import Link from "next/link";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { userRoles } from "@/types/role";
 
-export function DropdownMenuIcons({ image }: { image?: string }) {
+export function DropdownMenuIcons({
+  image,
+  userInfo,
+}: {
+  image?: string;
+  userInfo?: any;
+}) {
   const router = useRouter();
+  const userRole = userInfo?.role;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <img className="h-7.5 w-7.5 rounded-full object-cover" src={image} alt="" />
+        <img
+          className="h-7.5 w-7.5 rounded-full object-cover"
+          src={image}
+          alt=""
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent>
+        {userRole === userRoles.admin && (
+          <DropdownMenuItem>
+            <Link href={"/admin"} className="flex gap-3 w-full">
+              <LayoutDashboard />
+              Dashboard
+            </Link>
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem>
           <Link href={"/profile"} className="flex gap-3 w-full">
             <UserIcon />
-          Profile
+            Profile
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem>

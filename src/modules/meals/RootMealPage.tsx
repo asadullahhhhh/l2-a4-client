@@ -22,7 +22,7 @@ const RootMealPage = ({
     <div className="p-4">
       <div className="flex gap-3 flex-col mx-auto md:flex-row justify-center items-center mb-10">
         <div className="flex gap-3 justify-center items-center">
-          <SelectDemo startTransition={startTransition} categories={categoryData.data}></SelectDemo>
+          <SelectDemo startTransition={startTransition} categories={categoryData.data}  ctName="Select Category" paramName="category_id"></SelectDemo>
           <MealFilterSelect startTransition={startTransition}></MealFilterSelect>
         </div>
         <div>

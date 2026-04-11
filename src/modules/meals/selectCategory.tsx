@@ -9,26 +9,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-type Category = {
-  created_at: string;
-  description: string;
-  id: string;
-  name: string;
-  updated_at: string;
-};
 
-export function SelectDemo({ categories, startTransition }: { categories: Category[]; startTransition: (fn: () => void) => void }) {
+export function SelectDemo({ categories, startTransition, ctName, paramName }: { categories: any[]; startTransition: (fn: () => void) => void; ctName: string; paramName: string }) {
+    const searchParams = useSearchParams()
     const router = useRouter()
+
+    const params = new URLSearchParams(searchParams.toString())
   return (
     <Select onValueChange={(e) => {
         startTransition(() => {
-            router.push(`?${new URLSearchParams({category_id: e}).toString()}`)
+            params.set(paramName, e)
+            router.push(`?${params.toString()}`)
         })
     }}>
       <SelectTrigger className="w-full max-w-48">
-        <SelectValue placeholder="Select a category" />
+        <SelectValue placeholder={`${ctName}`} />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

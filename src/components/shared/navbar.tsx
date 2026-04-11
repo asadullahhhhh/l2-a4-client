@@ -81,6 +81,8 @@ const Navbar = ({
   className,
   session,
 }: Navbar1Props & { session: { data: any; error: any } }) => {
+ 
+  const isLoggedIn = !!session.data?.user
 
   const userImage =
     session.data?.user?.image ||
@@ -113,9 +115,9 @@ const Navbar = ({
             <div>
               <ModeToggle></ModeToggle>
             </div>
-            {session.data ? (
+            {isLoggedIn ? (
               <div>
-                <DropdownMenuIcons image={userImage}></DropdownMenuIcons>
+                <DropdownMenuIcons image={userImage} userInfo={session?.data?.user}></DropdownMenuIcons>
               </div>
             ) : (
               <div className="flex gap-2">
@@ -145,8 +147,8 @@ const Navbar = ({
               <SheetTrigger asChild>
                 <div className="gap-3 flex">
                   {
-                    session.data ? (
-                      <DropdownMenuIcons image={userImage}></DropdownMenuIcons>
+                    isLoggedIn ? (
+                      <DropdownMenuIcons image={userImage} userInfo={session?.data?.user}></DropdownMenuIcons>
                     ) : (null)
                   }
                   <ModeToggle></ModeToggle>

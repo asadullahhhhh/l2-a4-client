@@ -61,7 +61,7 @@ export function PaginationDemo({ meta, startTransition }: { meta: PaginationDemo
                 onClick={() => handlePageChange(page)}
                 className={`px-3 py-1 rounded-md text-sm ${
                   page === currentPage
-                    ? "bg-primary text-white"
+                    ? "bg-primary text-white dark:bg-primary/90 dark:text-black"
                     : "hover:bg-muted"
                 }`}
               >
@@ -83,8 +83,6 @@ export function PaginationDemo({ meta, startTransition }: { meta: PaginationDemo
           </PaginationItem>
         </PaginationContent>
       </Pagination>
-
-      {/* 🔥 LOADING INDICATOR */}
      
     </div>
   );
