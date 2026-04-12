@@ -126,10 +126,16 @@ const createCategory = async (payload: {
   }
 };
 
-const getAllOrders = async () => {
+const getAllOrders = async ({ page }: { page?: string }) => {
   const cookieStore = await cookies();
   try {
-    const result = await fetch(`${env.BACKEND_URL}/api/v1/order`, {
+    const url = new URL(`${env.BACKEND_URL}/api/v1/order`);
+
+    if(page) {
+      url.searchParams.set("page", page)
+    }
+
+    const result = await fetch(url.toString(), {
       headers: {
         "Content-Type": "application/json",
         Cookie: cookieStore.toString(),
