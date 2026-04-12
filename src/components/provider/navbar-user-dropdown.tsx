@@ -41,7 +41,7 @@ export function DropdownMenuIcons({
       <DropdownMenuContent>
         {userRole === userRoles.admin && (
           <DropdownMenuItem>
-            <Link href={"/admin"} className="flex gap-3 w-full">
+            <Link href={"/admin-dashboard"} className="flex gap-3 w-full">
               <LayoutDashboard />
               Dashboard
             </Link>

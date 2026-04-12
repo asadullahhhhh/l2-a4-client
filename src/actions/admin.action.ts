@@ -14,3 +14,9 @@ export const updateUserData = async (payload: UserPayload) => {
 
     return response
 }
+
+export const createCategory = async (payload: { name: string, description: string }) => {
+    const response = await AdminService.createCategory(payload)
+
+    return response
+}

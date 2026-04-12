@@ -57,7 +57,9 @@ const getMenus = async (params: GetBlogsParams, options?: GetBlogsOptions) => {
 
 const getCategories = async () => {
     try {
-        const response = await fetch(`${env.BACKEND_URL}/api/v1/category`)
+        const response = await fetch(`${env.BACKEND_URL}/api/v1/category`, {
+          cache: 'no-store'
+        })
 
         const data = await response.json();
 
