@@ -1,20 +1,19 @@
 import { AdminRoute } from "@/types/admin.types";
-import adminRoutes from "./admin.route";
 
 const providerRoutes: AdminRoute= {
     title: "Provider Controls",
     items: [
         {
-            title: "User Management",
-            url: "/provider-dashboard/user-management",
+            title: "Create Menu",
+            url: "/provider-dashboard/create-menu",
         },
         {
-            title: "Order Management",
-            url: "/provider-dashboard/order-management",
+            title: "Manage Menus",
+            url: "/provider-dashboard/manage-menus",
         },
         {
-            title: "Create Category",
-            url: "/provider-dashboard/create-category",
+            title: "Manage Orders",
+            url: "/provider-dashboard/manage-orders",
         }
     ]
 }

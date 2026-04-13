@@ -46,7 +46,17 @@ export function DropdownMenuIcons({
               Dashboard
             </Link>
           </DropdownMenuItem>
-        )}
+        )},
+        {
+          userRole === userRoles.provider && (
+            <DropdownMenuItem>
+            <Link href={"/provider-dashboard"} className="flex gap-3 w-full">
+              <LayoutDashboard />
+              Dashboard
+            </Link>
+          </DropdownMenuItem>
+          )
+        }
         <DropdownMenuItem>
           <Link href={"/profile"} className="flex gap-3 w-full">
             <UserIcon />
