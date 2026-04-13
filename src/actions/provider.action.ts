@@ -14,3 +14,8 @@ export const createMenu = async (menuData: MenuDetails) => {
     const response = await providerService.createMenu(menuData)
     return response;
 }
+
+export const updateMenuProvider = async (menuId: string, menuData: any) => {
+    const response = await menuService.updateMenu(menuId, menuData)
+    return response;
+}

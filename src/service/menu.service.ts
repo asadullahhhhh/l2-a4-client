@@ -1,8 +1,10 @@
 import env from "@/env";
-import { GetBlogsOptions, GetBlogsParams, OrderPayload } from "@/types/meal.type";
+import {
+  GetBlogsOptions,
+  GetBlogsParams,
+  OrderPayload,
+} from "@/types/meal.type";
 import { cookies } from "next/headers";
-
-
 
 const getMenus = async (params: GetBlogsParams, options?: GetBlogsOptions) => {
   try {
@@ -22,10 +24,10 @@ const getMenus = async (params: GetBlogsParams, options?: GetBlogsOptions) => {
       config.cache = options.cache;
     }
 
-    if(options?.revalidate) {
-        config.next = {
-            revalidate: options.revalidate
-        }
+    if (options?.revalidate) {
+      config.next = {
+        revalidate: options.revalidate,
+      };
     }
 
     const response = await fetch(url.toString(), config);
@@ -56,55 +58,55 @@ const getMenus = async (params: GetBlogsParams, options?: GetBlogsOptions) => {
 };
 
 const getCategories = async () => {
-    try {
-        const response = await fetch(`${env.BACKEND_URL}/api/v1/category`, {
-          cache: 'no-store'
-        })
-
-        const data = await response.json();
-
-        if(!data.success) {
-            return {
-                data: null,
-                error: {
-                    message: data.message || "Failed to fetch the categories."
-                }
-            }
-        }
-
-        return {
-            data: data.data,
-            error: null
-        }
-    }catch(error) {
-        return {
-            data: null,
-            error: {
-                message: "An error occurred while fetching the categories."
-            }
-        }
-    }
-}
-
-const getMealById = async (id: string) => {
   try {
-    const response = await fetch(`${env.BACKEND_URL}/api/v1/meals/${id}`)
+    const response = await fetch(`${env.BACKEND_URL}/api/v1/category`, {
+      cache: "no-store",
+    });
 
     const data = await response.json();
 
-    if(!data.success) {
-        return {
-            data: null,
-            error: {
-                message: data.message || "Failed to fetch the meal details."
-            }
-        }
+    if (!data.success) {
+      return {
+        data: null,
+        error: {
+          message: data.message || "Failed to fetch the categories.",
+        },
+      };
     }
 
     return {
-        data: data.data,
-        error: null
+      data: data.data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "An error occurred while fetching the categories.",
+      },
+    };
+  }
+};
+
+const getMealById = async (id: string) => {
+  try {
+    const response = await fetch(`${env.BACKEND_URL}/api/v1/meals/${id}`);
+
+    const data = await response.json();
+
+    if (!data.success) {
+      return {
+        data: null,
+        error: {
+          message: data.message || "Failed to fetch the meal details.",
+        },
+      };
     }
+
+    return {
+      data: data.data,
+      error: null,
+    };
   } catch (error) {
     return {
       data: null,
@@ -113,7 +115,7 @@ const getMealById = async (id: string) => {
       },
     };
   }
-}
+};
 
 const createOrder = async (payload: OrderPayload) => {
   const cookieStore = await cookies();
@@ -122,15 +124,15 @@ const createOrder = async (payload: OrderPayload) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString()
+        Cookie: cookieStore.toString(),
       },
       body: JSON.stringify(payload),
-    })
+    });
 
     return {
       data: await response.json(),
-      error: null
-    }
+      error: null,
+    };
   } catch (error) {
     return {
       data: null,
@@ -139,43 +141,52 @@ const createOrder = async (payload: OrderPayload) => {
       },
     };
   }
-}
+};
 
 const isBookMark = async (id: string) => {
   try {
     const cookieStore = await cookies();
-    const response = await fetch(`${env.BACKEND_URL}/api/v1/cartItem/isAddCart/${id}`, {
-      headers: {
-        Cookie: cookieStore.toString()
-      }
-    })
+    const response = await fetch(
+      `${env.BACKEND_URL}/api/v1/cartItem/isAddCart/${id}`,
+      {
+        headers: {
+          Cookie: cookieStore.toString(),
+        },
+      },
+    );
 
     const data = await response.json();
 
-    if(!data.success) {
-        return {
-            data: null,
-            error: {
-                message: data.message || "Failed to check the meal bookmark status."
-            }
-        }
+    if (!data.success) {
+      return {
+        data: null,
+        error: {
+          message: data.message || "Failed to check the meal bookmark status.",
+        },
+      };
     }
 
     return {
-        data,
-        error: null
-    }
+      data,
+      error: null,
+    };
   } catch (error: any) {
     return {
       data: null,
       error: {
-        message: error.message || "An error occurred while meal bookmarking." ,
+        message: error.message || "An error occurred while meal bookmarking.",
       },
-    }
+    };
   }
-}
+};
 
-const addCart = async (mealId: string, price: string, provider_id: string, image_url: string, name: string) => {
+const addCart = async (
+  mealId: string,
+  price: string,
+  provider_id: string,
+  image_url: string,
+  name: string,
+) => {
   try {
     const cookieStore = await cookies();
 
@@ -183,42 +194,122 @@ const addCart = async (mealId: string, price: string, provider_id: string, image
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieStore.toString()
+        Cookie: cookieStore.toString(),
       },
       body: JSON.stringify({
         meal_id: mealId,
         price,
         provider_id,
         image_url,
-        name
-      })
-    })
+        name,
+      }),
+    });
 
     const data = await response.json();
 
-    if(!response.ok) {
+    if (!response.ok) {
       const data = await response.json();
       return {
         data: null,
         error: {
-          message: data.message || "Failed to add the meal to cart."
-        }
-      }
+          message: data.message || "Failed to add the meal to cart.",
+        },
+      };
     }
 
     return {
       data,
-      error: null
-    }
+      error: null,
+    };
   } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "An error occurred while adding the meal to cart.",
+      },
+    };
+  }
+};
+
+const getProviderMenus = async ({ page }: { page?: string }) => {
+  try {
+    const cookieStore = await cookies();
+
+    const url = new URL(`${env.BACKEND_URL}/api/v1/meals/provider-meals`);
+
+    if (page) {
+      url.searchParams.set("page", page);
+    }
+
+    const response = await fetch(url.toString(), {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+    });
+
+    const data = await response.json();
+    if (!response.ok) {
       return {
         data: null,
         error: {
-          message: "An error occurred while adding the meal to cart.",
+          message: data.message || "Failed to fetch the provider's menus.",
         },
       };
+    }
+
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "An error occurred while fetching the provider's menus.",
+      },
+    };
   }
-}
+};
+
+const updateMenu = async (mealId: string, updateData: any) => {
+  try {
+    const cookieStore = await cookies();
+
+    const response = await fetch(`${env.BACKEND_URL}/api/v1/meals/${mealId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      body: JSON.stringify(updateData),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return {
+        data: null,
+        error: {
+          message: data.message || "Failed to update the menu.",
+        },
+      };
+    }
+
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "An error occurred while updating the menu.",
+      },
+    };
+  }
+};
 
 export const menuService = {
   getMenus,
@@ -226,5 +317,7 @@ export const menuService = {
   getMealById,
   createOrder,
   isBookMark,
-  addCart
+  addCart,
+  getProviderMenus,
+  updateMenu,
 };
