@@ -311,6 +311,87 @@ const updateMenu = async (mealId: string, updateData: any) => {
   }
 };
 
+const deleteMenu = async (mealId: string) => {
+  try {
+    const cookieStore = await cookies();
+
+    const response = await fetch(`${env.BACKEND_URL}/api/v1/meals/${mealId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      }
+    })
+
+
+    if(!response.ok) {
+      return {
+        data: null,
+        error: {
+          message: "Failed to delete the menu.",
+        },
+      }
+    }
+
+    const data = await response.json();
+
+    return {
+      data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "An error occurred while deleting the menu.",
+      },
+    };
+  }
+}
+
+const getProviderOrders = async ({page}: { page?: string }) => {
+  try {
+    const cookieStore = await cookies();
+
+    const url = new URL(`${env.BACKEND_URL}/api/v1/provider/orders`)
+
+    if(page) {
+      url.searchParams.set("page", page);
+    }
+
+    const response = await fetch(url.toString(), {
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      cache: "no-store",
+    })
+
+    const data = await response.json();
+
+    if(!response.ok) {
+      return {
+        data: null,
+        error: {
+          message: data.message || "Failed to fetch the provider's orders.",
+        },
+      }
+    }
+
+    return {
+      data,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "An error occurred while fetching the provider's orders.",
+      },
+    };
+  }
+}
+
 export const menuService = {
   getMenus,
   getCategories,
@@ -320,4 +401,6 @@ export const menuService = {
   addCart,
   getProviderMenus,
   updateMenu,
+  deleteMenu,
+  getProviderOrders,
 };

@@ -9,7 +9,7 @@ import { Meal } from "@/types/meal.type";
 
 export function MealCard({ meal }: { meal: Meal }) {
   return (
-    <Card className="overflow-hidden rounded-2xl shadow-sm hover:shadow-lg transition">
+    <Card key={meal.id} className="overflow-hidden rounded-2xl shadow-sm hover:shadow-lg transition">
       
       {/* Image */}
       <div className="relative h-48 w-full">

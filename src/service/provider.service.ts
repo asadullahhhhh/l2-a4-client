@@ -97,8 +97,46 @@ const createMenu = async (menuData: MenuDetails) => {
     }
 }
 
+const updateOrderStatus = async (orderId: string, status: {status: string}) => {
+    const cookieStore = await cookies()
+    try {
+        const response = await fetch(`${env.BACKEND_URL}/api/v1/order/${orderId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString()
+            },
+            body: JSON.stringify(status)
+        })
+
+        const data = await response.json()
+
+        if (!response.ok) {
+            return {
+                data: null,
+                error: {
+                    message: data.message || "Failed to update order status",
+                }
+            }
+        }
+
+        return {
+            data,
+            error: null
+        }
+    } catch (error) {
+        return {
+            data: null,
+            error: {   
+                message: "Failed to update order status",
+            }
+        }
+    }
+}
+
 export const providerService = {
     getAllProviders,
     getProviderById,
-    createMenu
+    createMenu,
+    updateOrderStatus
 }

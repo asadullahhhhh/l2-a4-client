@@ -26,19 +26,19 @@ const MealDetails = ({
       redirect("/login");
     }
 
-    if (isBookMark) {
-      toast.info("Meal is already in the cart.", {
-        id: toastId,
-      });
-      return;
-    }else {
-      const data = await createBookMark(meal.id, meal.price, meal.provider_id, meal.image_url, meal.name);
-      if(data?.data?.success) {
-        toast.success("Meal added to cart successfully.", {
-          id: toastId,
-        });
-      }
-    }
+    // if (isBookMark) {
+    //   toast.info("Meal is already in the cart.", {
+    //     id: toastId,
+    //   });
+    //   return;
+    // }else {
+    //   const data = await createBookMark(meal.id, meal.price, meal.provider_id, meal.image_url, meal.name);
+    //   if(data?.data?.success) {
+    //     toast.success("Meal added to cart successfully.", {
+    //       id: toastId,
+    //     });
+    //   }
+    // }
 
     
   };

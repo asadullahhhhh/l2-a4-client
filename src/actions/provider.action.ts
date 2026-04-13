@@ -19,3 +19,14 @@ export const updateMenuProvider = async (menuId: string, menuData: any) => {
     const response = await menuService.updateMenu(menuId, menuData)
     return response;
 }
+
+
+export const deleteMenuProvider = async (menuId: string) => {
+    const response = await menuService.deleteMenu(menuId)
+    return response;
+}
+
+export const updateOrderStatus = async (orderId: string, status: {status: string}) => {
+    const response = await providerService.updateOrderStatus(orderId, status)
+    return response;
+}

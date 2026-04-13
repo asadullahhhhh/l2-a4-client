@@ -20,6 +20,8 @@ import {
 import { useRouter } from "next/navigation";
 import { PaginationDemo } from "@/components/shared/pagination";
 import MealsTableSkeleton from "./manageMenuSkeleton";
+import { toast } from "sonner";
+import { deleteMenuProvider } from "@/actions/provider.action";
 
 // ================= TYPES =================
 type Meal = {
@@ -46,7 +48,6 @@ export default function ManageMealsTable({
   const [isPending, startTransition] = useTransition();
 
   const router = useRouter();
-  console.log(meta);
 
   const [open, setOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -56,9 +57,22 @@ export default function ManageMealsTable({
     setOpen(true);
   };
 
-  const confirmDelete = () => {
-    console.log("DELETE ID =>", selectedId);
-    setOpen(false);
+  const confirmDelete = async() => {
+    const taostId = toast.loading("Deleting the meal...");
+    try {
+      const {data, error} = await deleteMenuProvider(selectedId as string);
+
+      if(data){
+        toast.success("Meal deleted successfully!", { id: taostId });
+        router.refresh();
+        setOpen(false);
+        return
+      }
+    } catch (error) {
+      toast.error("Failed to delete the meal.", { id: taostId });
+    } finally{
+      setOpen(false);
+    }
   };
 
   return (
