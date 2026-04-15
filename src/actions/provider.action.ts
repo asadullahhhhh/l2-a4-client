@@ -30,3 +30,8 @@ export const updateOrderStatus = async (orderId: string, status: {status: string
     const response = await providerService.updateOrderStatus(orderId, status)
     return response;
 }
+
+export const createProviderProfile = async (payload: any) => {
+    const response = await providerService.createProviderProfile(payload)
+    return response;
+}

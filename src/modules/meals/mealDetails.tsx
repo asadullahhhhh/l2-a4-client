@@ -10,38 +10,47 @@ import { redirect } from "next/navigation";
 import { CheckoutButton } from "./checkoutButton";
 import { toast } from "sonner";
 import { createBookMark } from "@/actions/menu.action";
+import PostReviewForm from "./review";
 
 const MealDetails = ({
   meal,
   session,
   isBookMark,
+  exist,
 }: {
   meal: any;
   session: any;
   isBookMark: boolean;
+  exist: boolean;
 }) => {
   const handelBookMark = async () => {
-    const toastId = toast.loading("Adding meal to cart...");
     if (!session) {
       redirect("/login");
     }
+    const toastId = toast.loading("Adding meal to cart...");
 
-    // if (isBookMark) {
-    //   toast.info("Meal is already in the cart.", {
-    //     id: toastId,
-    //   });
-    //   return;
-    // }else {
-    //   const data = await createBookMark(meal.id, meal.price, meal.provider_id, meal.image_url, meal.name);
-    //   if(data?.data?.success) {
-    //     toast.success("Meal added to cart successfully.", {
-    //       id: toastId,
-    //     });
-    //   }
-    // }
-
-    
+    if (isBookMark) {
+      toast.info("Meal is already in the cart.", {
+        id: toastId,
+      });
+      return;
+    } else {
+      const data = await createBookMark(
+        meal.id,
+        meal.price,
+        meal.provider_id,
+        meal.image_url,
+        meal.name,
+      );
+      if (data?.data?.success) {
+        toast.success("Meal added to cart successfully.", {
+          id: toastId,
+        });
+      }
+    }
   };
+
+
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
@@ -97,7 +106,7 @@ const MealDetails = ({
 
           {/* ACTION BUTTONS */}
           <div className="flex flex-col gap-3 pt-4">
-            <CheckoutButton mealId={meal.id} providerId={meal.provider.id} />
+            <CheckoutButton mealId={meal.id} session={session} providerId={meal.provider.id} />
             <Button
               variant="outline"
               className="w-full"
@@ -116,6 +125,9 @@ const MealDetails = ({
         <h2 className="text-xl font-semibold">Meal Details</h2>
         <p className="text-muted-foreground">{meal.description}</p>
       </Card>
+
+      {/* ================= POST REVIEW ================= */}
+      { exist && <PostReviewForm mealId={meal.id} />}
 
       {/* ================= REVIEWS ================= */}
       <div className="space-y-4">

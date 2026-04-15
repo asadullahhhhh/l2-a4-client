@@ -20,6 +20,7 @@ import {
 import { menuService } from "@/service/menu.service";
 import { createOrder } from "@/actions/menu.action";
 import { toast } from "sonner";
+import { redirect } from "next/navigation";
 
 const orderSchema = z.object({
   quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
@@ -29,9 +30,11 @@ const orderSchema = z.object({
 export function CheckoutButton({
   mealId,
   providerId,
+  session,
 }: {
   mealId: string;
   providerId: string;
+  session: any;
 }) {
 
   const form = useForm({
@@ -80,7 +83,10 @@ export function CheckoutButton({
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} className="w-full">
+      <Button onClick={() => {
+        setOpen(true)
+        if(!session) {redirect("/login")}
+        }} className="w-full">
         Order Now
       </Button>
 

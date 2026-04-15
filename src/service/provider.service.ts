@@ -73,6 +73,7 @@ const createMenu = async (menuData: MenuDetails) => {
         })
 
         const data = await response.json()
+        console.log(data);
 
         if (!response.ok) {
             return {
@@ -134,9 +135,84 @@ const updateOrderStatus = async (orderId: string, status: {status: string}) => {
     }
 }
 
+const getProviderData = async () => {
+    const cookieStore = await cookies()
+
+    try {
+        const response = await fetch(`${env.BACKEND_URL}/api/v1/provider/my-provider`, {
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString()
+            }
+        })
+
+        const data = await response.json()
+
+        if(!response.ok) {
+            return {
+                data: null,
+                error: {
+                    message: data.message || "Failed to fetch provider data",
+                }
+            }
+        }
+
+        return {
+            data,
+            error: null
+        }
+    } catch (error) {
+        return {
+            data: null,
+            error: {
+                message: "Failed to fetch provider data",
+            }
+        }
+    }
+}
+
+const createProviderProfile = async (payload: any) => {
+    const cookieStore = await cookies()
+    try {
+        const response = await fetch(`${env.BACKEND_URL}/api/v1/provider`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Cookie: cookieStore.toString()
+            },
+            body: JSON.stringify(payload)
+        })
+
+        const data = await response.json()
+
+        if(!response.ok) {
+            return {
+                data: null,
+                error: {
+                    message: data.message || "Failed to create provider profile",
+                }
+            }
+        }
+
+        return {
+            data,
+            error: null
+        }
+    } catch (error) {
+        return {
+            data: null,
+            error: {
+                message: "Failed to create provider profile",
+            }
+        }
+    }
+}
+
 export const providerService = {
     getAllProviders,
     getProviderById,
     createMenu,
-    updateOrderStatus
+    updateOrderStatus,
+    getProviderData,
+    createProviderProfile
 }

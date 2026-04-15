@@ -392,6 +392,48 @@ const getProviderOrders = async ({page}: { page?: string }) => {
   }
 }
 
+const createReview = async (mealId: string, rating: number, comment: string) => {
+  try {
+    const cookieStore = await cookies();
+
+    const response = await fetch(`${env.BACKEND_URL}/api/v1/reviews`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      body: JSON.stringify({
+        meal_id: mealId,
+        rating,
+        comment,
+      }),
+    })
+
+    const data = await response.json();
+
+    if(!response.ok) {
+      return {
+        data: null,
+        error: {
+          message: data.message || "Failed to submit the review.",
+        },
+      }
+    }
+
+    return {
+      data,
+      error: null,
+    }
+  } catch (error) {
+    return {
+      data: null,
+      error: {
+        message: "An error occurred while submitting the review.",
+      },
+    };
+  }
+}
+
 export const menuService = {
   getMenus,
   getCategories,
@@ -403,4 +445,5 @@ export const menuService = {
   updateMenu,
   deleteMenu,
   getProviderOrders,
+  createReview,
 };

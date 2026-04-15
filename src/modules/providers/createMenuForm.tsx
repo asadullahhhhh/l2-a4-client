@@ -81,6 +81,7 @@ const CreateMenuForm = () => {
         setIsSubmitting(true);
 
         const { data } = await createMenu(value);
+        console.log(data);
 
         if (data) {
           setIsSubmitting(false);
