@@ -20,7 +20,7 @@ import {
 import { menuService } from "@/service/menu.service";
 import { createOrder } from "@/actions/menu.action";
 import { toast } from "sonner";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 const orderSchema = z.object({
   quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
@@ -36,6 +36,7 @@ export function CheckoutButton({
   providerId: string;
   session: any;
 }) {
+  const router = useRouter();
 
   const form = useForm({
     defaultValues: {
@@ -62,6 +63,7 @@ export function CheckoutButton({
 
         if (response.data.success) {
           toast.success("Order confirmed successfully!", { id: toastId });
+          router.refresh()
           setOpen(false);
           return
         }

@@ -148,7 +148,9 @@ export default function OrderManagementTable({
         )}
 
         <div>
-          <PaginationDemo meta={meta} startTransition={startTransition} />
+          {meta.totalPage > 1 && (
+            <PaginationDemo meta={meta} startTransition={startTransition} />
+          )}
         </div>
       </div>
 
