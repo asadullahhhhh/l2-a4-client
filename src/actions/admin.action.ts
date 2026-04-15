@@ -20,3 +20,9 @@ export const createCategory = async (payload: { name: string, description: strin
 
     return response
 }
+
+export const updateCategory = async (id: string, payload: { name?: string; description?: string }) => {
+    const response = await AdminService.updateCategory(id, payload)
+
+    return response
+}

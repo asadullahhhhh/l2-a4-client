@@ -14,6 +14,10 @@ const adminRoutes: AdminRoute= {
         {
             title: "Create Category",
             url: "/admin-dashboard/create-category",
+        },
+        {
+            title: "Manage Category",
+            url: "/admin-dashboard/manage-category",
         }
     ]
 }

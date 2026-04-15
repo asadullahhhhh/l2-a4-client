@@ -166,9 +166,47 @@ const getAllOrders = async ({ page }: { page?: string }) => {
   }
 };
 
+const updateCategory = async (id: string, payload: { name?: string; description?: string }) => {
+  try {
+    const cookieStore = await cookies();
+    const response = await fetch(`${env.BACKEND_URL}/api/v1/category/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieStore.toString(),
+      },
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      return {
+        data: null,
+        error: {
+          message: `Failed to update category: ${response.statusText}`,
+        },
+      };
+    }
+
+    const data = await response.json();
+    return {
+      data,
+      error: null,
+    };
+  } catch (error: any) {
+    return {
+      data: null,
+      error: {
+        message: error.message || "An error occurred while updating category.",
+      },
+    };
+  }
+}
+
+ 
 export const AdminService = {
   getAllUsers,
   updateUserData,
   createCategory,
   getAllOrders,
+  updateCategory,
 };
