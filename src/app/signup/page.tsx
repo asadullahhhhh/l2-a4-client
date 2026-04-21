@@ -1,7 +1,4 @@
-"use client";
-
 import { SignupForm } from "@/modules/authentication/signup-form";
-import { GalleryVerticalEndIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function SignupPage() {
