@@ -7,7 +7,7 @@ const OrdersPage = async () => {
     const orders = data?.data || []
     
     return (
-        <div>
+        <div className="min-h-[calc(100vh-436px)]">
             <OrdersTablePage orders={orders}></OrdersTablePage>
         </div>
     )

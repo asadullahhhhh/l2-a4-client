@@ -4,74 +4,31 @@ import Image from "next/image";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import * as z from "zod";
-import { useForm } from "@tanstack/react-form";
-import { Field, FieldError, FieldLabel } from "@/components/ui/field";
 import { toast } from "sonner";
-import { createOrder } from "@/actions/menu.action";
 import { useRouter } from "next/navigation";
 import { removeCartItem } from "@/actions/cart.action";
+import { loadStripe } from "@stripe/stripe-js";
+import env from "@/env";
+import { Elements } from "@stripe/react-stripe-js";
+import CartCheckoutWarper from "./checkoutWarper";
 
-const checkoutSchema = z.object({
-  address: z.string().min(1, "Address is required"),
-});
 
-export default function SubCartPage({ cartItems }: { cartItems: any[] }) {
-  const router = useRouter();
+
+const stripePromise = loadStripe(env.NEXT_PUBLIC_PAYMENT_PUBLISHER_KEY);
+
+
+export default function SubCartPage({ cartItems, session }: { cartItems: any[]; session: any }) {
 
   const [items, setItems] = useState(cartItems);
   const [open, setOpen] = useState(false);
 
-  const form = useForm({
-    defaultValues: {
-      address: "",
-    },
-    validators: {
-      onSubmit: checkoutSchema,
-    },
-    onSubmit: async ({ value }) => {
-      const payload = {
-        items: items.map((item) => ({
-          meal_id: item.meal_id,
-          provider_id: item.provider_id,
-          quantity: item.quantity,
-        })),
-        delivery_address: value.address,
-      };
-
-      const toastId = toast.loading("Placing your order...");
-      try {
-        const response = await createOrder(payload);
-
-        if (response) {
-          toast.success("Order placed successfully!", {
-            id: toastId,
-          });
-          setItems([]);
-          setOpen(false);
-          router.push("/orders");
-          return;
-        }
-
-        toast.error("Failed to place the order. Please try again.", {
-          id: toastId,
-        });
-      } catch (error) {
-        toast.error("Failed to place the order. Please try again.", {
-          id: toastId,
-        });
-      }
-    },
-  });
-
-  //
+ 
 
   // ✅ quantity update
   const updateQuantity = (id: string, type: "inc" | "dec") => {
@@ -100,7 +57,7 @@ export default function SubCartPage({ cartItems }: { cartItems: any[] }) {
         id: toastId,
       });
       setItems((prev) => prev.filter((item) => item.id !== id));
-      return
+      return;
     }
 
     toast.error(
@@ -112,7 +69,7 @@ export default function SubCartPage({ cartItems }: { cartItems: any[] }) {
   };
 
   // ✅ total
-  const total = items.reduce(
+  const totalPrice = items.reduce(
     (acc, item) => acc + Number(item.price) * item.quantity,
     0,
   );
@@ -235,7 +192,7 @@ export default function SubCartPage({ cartItems }: { cartItems: any[] }) {
           <div className="flex justify-end">
             <div className="text-right space-y-1">
               <p className="text-lg font-semibold">
-                Sub Total: ${total.toFixed(2)}
+                Sub Total: ${totalPrice.toFixed(2)}
               </p>
               <p className="text-xs text-muted-foreground">
                 Excl. Tax and Delivery charge
@@ -256,41 +213,9 @@ export default function SubCartPage({ cartItems }: { cartItems: any[] }) {
                 <DialogTitle>Checkout</DialogTitle>
               </DialogHeader>
 
-              <div className="space-y-4">
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    form.handleSubmit();
-                  }}
-                >
-                  <form.Field
-                    name="address"
-                    children={(field) => {
-                      const isInvalid =
-                        field.state.meta.isTouched && !field.state.meta.isValid;
-                      return (
-                        <Field>
-                          <FieldLabel>Addredd</FieldLabel>
-                          <Input
-                            id={field.name}
-                            name={field.name}
-                            value={field.state.value}
-                            onChange={(e) => field.handleChange(e.target.value)}
-                            type="text"
-                            placeholder="Enter your delivery address"
-                          ></Input>
-                          {isInvalid && (
-                            <FieldError errors={field.state.meta.errors} />
-                          )}
-                        </Field>
-                      );
-                    }}
-                  ></form.Field>
-                  <Button type="submit" className="w-full mt-3">
-                    Place Order
-                  </Button>
-                </form>
-              </div>
+              <Elements stripe={stripePromise}>
+                <CartCheckoutWarper setItems={setItems} setOpen={setOpen} items={items} totalPrice={totalPrice} session={session} />
+              </Elements>
             </DialogContent>
           </Dialog>
         </div>

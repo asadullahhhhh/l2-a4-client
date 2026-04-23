@@ -16,7 +16,7 @@ const RootProviderPage = ({
   const [isPending, startTransition] = useTransition();
 
   return (
-    <div className="max-w-6xl mx-auto px-5">
+    <div className="max-w-6xl mx-auto px-5 min-h-[calc(100vh-436px)]">
       <div>
         <div>
           {isPending ? (
