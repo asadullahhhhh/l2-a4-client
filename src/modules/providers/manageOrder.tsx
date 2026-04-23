@@ -48,8 +48,6 @@ export default function OrderManagementTable({
 
   const router = useRouter();
 
-  console.log(meta);
-
   const handleOpen = (order: any) => {
     setSelectedOrder(order);
     setStatus(order.status);

@@ -12,6 +12,11 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
 import { useTheme } from "next-themes";
+import { useState } from "react";
+import { paymentIntent } from "@/actions/payment.action";
+import { toast } from "sonner";
+import { createOrder } from "@/actions/menu.action";
+import { useRouter } from "next/navigation";
 
 const orderSchema = z.object({
   quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
@@ -21,15 +26,22 @@ const orderSchema = z.object({
 export default function CheckoutInnerForm({
   mealId,
   providerId,
+  mealPrice,
+  session,
 }: {
   mealId: string;
   providerId: string;
+  mealPrice: number;
+  session: any;
 }) {
   // ==> Stripe Hooks and state <===
   const stripe = useStripe();
   const elements = useElements();
   const theme = useTheme();
-  const isDark = theme.theme === "dark"
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter()
+  const isDark = theme.theme === "dark";
 
   //   ==> Form Submission Handler <==
   const form = useForm({
@@ -38,15 +50,123 @@ export default function CheckoutInnerForm({
       address: "",
     },
     validators: {
-      onSubmit: orderSchema,
+      onSubmit: orderSchema as any,
     },
     onSubmit: async ({ value }) => {
-      if (!stripe || !elements) return;
+      const item = {
+        items: [
+          {
+            meal_id: mealId,
+            provider_id: providerId,
+            quantity: value.quantity,
+          },
+        ],
+        delivery_address: value.address,
+      };
+
+      const toastId = toast.loading("Processing your order...");
+      setLoading(true);
+
+      // ===> Card functions <===
+      if (!stripe || !elements) {
+        toast.error("Stripe has not loaded yet. Please try again.", {
+          id: toastId,
+        });
+        setLoading(false);
+        return;
+      }
 
       const card = elements.getElement(CardElement);
-      console.log(card);
 
-      console.log(value);
+      if (!card) {
+        toast.error("Card information is not available. Please try again.", {
+          id: toastId,
+        });
+        setLoading(false);
+        return;
+      }
+
+      const { error, paymentMethod } = await stripe.createPaymentMethod({
+        type: "card",
+        card,
+      });
+
+      if (error) {
+        setError(error.message || "An unexpected error occurred.");
+        return;
+      }
+      setError(null);
+
+      const amount = mealPrice * value.quantity * 100;
+
+      //   ===> Create Payment Intent and get client secret <===
+      const { data, error: paymentError } = await paymentIntent(amount);
+      const clientSecret = data?.clientSecret;
+
+      if (paymentError || !clientSecret) {
+        toast.error(
+          paymentError?.message ||
+            "Failed to create payment intent. Please try again.",
+          {
+            id: toastId,
+          },
+        );
+        setLoading(false);
+        return;
+      }
+
+      //   ==> Handle Payment Confirmation <===
+      const result = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: elements.getElement(CardElement)!,
+          billing_details: {
+            email: session?.user?.email || "guest@example.com",
+            name: session?.user?.name || "Guest User",
+          },
+        },
+      });
+
+      if (result.error) {
+        toast.error(
+          result.error.message || "Payment failed. Please try again.",
+          {
+            id: toastId,
+          },
+        );
+        setLoading(false);
+      } else {
+        if (result.paymentIntent?.status === "succeeded") {
+          // Payment successful, you can now create the order in your backend
+          const payload = {
+            paymentData: {
+              paymentId: result.paymentIntent?.id,
+              amount: result.paymentIntent?.amount,
+              currency: result.paymentIntent?.currency,
+            },
+            item,
+          };
+
+          const { data, error } = await createOrder(payload);
+
+          if (error) {
+            toast.error(
+              error?.message ||
+                "Failed to create order. Please contact support.",
+              {
+                id: toastId,
+              },
+            );
+            setLoading(false);
+            return;
+          }
+
+          toast.success("Your order has been placed successfully!", {
+            id: toastId,
+          });
+          setLoading(false);
+          router.push("/orders");
+        }
+      }
     },
   });
 
@@ -101,6 +221,7 @@ export default function CheckoutInnerForm({
           >
             <CardElement options={CARD_OPTIONS} />
           </div>
+          {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
         </Field>
 
         <form.Field
@@ -140,8 +261,12 @@ export default function CheckoutInnerForm({
           }}
         />
 
-        <Button type="submit" className="w-full">
-          Confirm Order
+        <Button
+          disabled={loading || !stripe}
+          type="submit"
+          className="w-full disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {loading ? "Processing..." : "Confirm Order"}
         </Button>
       </FieldGroup>
     </form>

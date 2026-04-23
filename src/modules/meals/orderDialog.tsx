@@ -10,7 +10,7 @@ import CheckoutWrapper from "./checkoutWarper";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 
-const OrderDialog = ({ open, setOpen, mealId, providerId, session }: any) => {
+const OrderDialog = ({ open, setOpen, mealId, providerId, session, mealPrice }: any) => {
   const router = useRouter();
   return (
     <>
@@ -36,6 +36,7 @@ const OrderDialog = ({ open, setOpen, mealId, providerId, session }: any) => {
               mealId={mealId}
               providerId={providerId}
               session={session}
+              mealPrice={mealPrice}
             />
           </div>
         </DialogContent>

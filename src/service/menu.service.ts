@@ -117,7 +117,7 @@ const getMealById = async (id: string) => {
   }
 };
 
-const createOrder = async (payload: OrderPayload) => {
+const createOrder = async (payload: any) => {
   const cookieStore = await cookies();
   try {
     const response = await fetch(`${env.BACKEND_URL}/api/v1/order`, {

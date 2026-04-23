@@ -7,7 +7,6 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { CheckoutButton } from "./checkoutButton";
 import { toast } from "sonner";
 import { createBookMark } from "@/actions/menu.action";
 import PostReviewForm from "./review";
@@ -76,7 +75,7 @@ const MealDetails = ({
       {/* ================= MEAL HERO ================= */}
       <div className="grid md:grid-cols-2 gap-8">
         {/* IMAGE */}
-        <div className="relative h-[320px] w-full rounded-xl overflow-hidden">
+        <div className="relative h-80 w-full rounded-xl overflow-hidden">
           <Image
             src={
               meal.image_url ||
@@ -114,6 +113,7 @@ const MealDetails = ({
               session={session}
               open={open}
               setOpen={setOpen}
+              mealPrice={meal.price}
             />
             <Button
               variant="outline"

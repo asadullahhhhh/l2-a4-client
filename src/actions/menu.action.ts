@@ -3,7 +3,7 @@
 import { menuService } from "@/service/menu.service";
 import { OrderPayload } from "@/types/meal.type";
 
-export const createOrder = async (payload: OrderPayload) => {
+export const createOrder = async (payload: any) => {
   const response = await menuService.createOrder(payload);
 
   return response;

@@ -4,7 +4,6 @@ import { AdminService } from "@/service/admin.service";
 const OrderManagementPage = async ({searchParams}: {searchParams: Promise<{page: string}>}) => {
     const {page} = await searchParams;
     const { data, error } = await AdminService.getAllOrders({page})
-    console.log(data.data.meta);
 
     const orders = data?.data?.data || [];
     const meta = data?.data?.meta || {

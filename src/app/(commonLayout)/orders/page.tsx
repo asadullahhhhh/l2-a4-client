@@ -5,7 +5,6 @@ const OrdersPage = async () => {
     const {data} = await orderService.getUserOrders()
 
     const orders = data?.data || []
-    console.log(orders);
     
     return (
         <div>

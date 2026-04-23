@@ -6,8 +6,6 @@ const ProviderDashboardPage = async () => {
     const {data, error} = await providerService.getProviderData()
     const isProvider = data?.data ? true : false;
 
-    console.log(isProvider);
-
     if(isProvider) {
         return redirect("/provider-dashboard/create-menu")
     }
