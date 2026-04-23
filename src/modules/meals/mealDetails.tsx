@@ -11,6 +11,8 @@ import { CheckoutButton } from "./checkoutButton";
 import { toast } from "sonner";
 import { createBookMark } from "@/actions/menu.action";
 import PostReviewForm from "./review";
+import OrderDialog from "./orderDialog";
+import { useState } from "react";
 
 const MealDetails = ({
   meal,
@@ -23,6 +25,7 @@ const MealDetails = ({
   isBookMark: boolean;
   exist: boolean;
 }) => {
+  const [open, setOpen] = useState(false);
   const handelBookMark = async () => {
     if (!session) {
       redirect("/login");
@@ -49,8 +52,6 @@ const MealDetails = ({
       }
     }
   };
-
-
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-8">
@@ -106,7 +107,14 @@ const MealDetails = ({
 
           {/* ACTION BUTTONS */}
           <div className="flex flex-col gap-3 pt-4">
-            <CheckoutButton mealId={meal.id} session={session} providerId={meal.provider.id} />
+            {/* <CheckoutButton mealId={meal.id} session={session} providerId={meal.provider.id} /> */}
+            <OrderDialog
+              mealId={meal.id}
+              providerId={meal.provider.id}
+              session={session}
+              open={open}
+              setOpen={setOpen}
+            />
             <Button
               variant="outline"
               className="w-full"
@@ -127,7 +135,7 @@ const MealDetails = ({
       </Card>
 
       {/* ================= POST REVIEW ================= */}
-      { exist && <PostReviewForm mealId={meal.id} />}
+      {exist && <PostReviewForm mealId={meal.id} />}
 
       {/* ================= REVIEWS ================= */}
       <div className="space-y-4">
