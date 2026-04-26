@@ -1,9 +1,9 @@
 "use client";
 
 import { LoginForm } from "@/modules/authentication/login-form";
-import { SignupForm } from "@/modules/authentication/signup-form";
-import { GalleryVerticalEndIcon } from "lucide-react";
 import Link from "next/link";
+import { Suspense } from "react";
+import SuspenseLoginLoading from "./skeleton";
 
 export default function LoginPage() {
   const logo = {
@@ -26,7 +26,9 @@ export default function LoginPage() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <LoginForm />
+            <Suspense fallback={<SuspenseLoginLoading />}>
+              <LoginForm />
+            </Suspense>
           </div>
         </div>
       </div>

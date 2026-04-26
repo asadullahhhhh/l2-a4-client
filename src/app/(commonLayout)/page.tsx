@@ -5,7 +5,8 @@ import { ProviderCard } from "@/modules/providers/providerCard";
 import { homeService } from "@/service/home.service";
 import { Meal } from "@/types/meal.type";
 import { Provider } from "@/types/provider.type";
-import Image from "next/image";
+
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
 

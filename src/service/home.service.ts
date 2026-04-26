@@ -1,9 +1,10 @@
 import env from "@/env"
 import { cookies } from "next/headers"
 
-const cookieStore = await cookies()
+
 
 const getFeaturedMeals = async () => {
+    const cookieStore = await cookies()
     try {
         const response = await fetch(`${env.BACKEND_URL}/api/v1/home/featured-meals`, {
             method: "GET",
@@ -39,6 +40,7 @@ const getFeaturedMeals = async () => {
 }
 
 const getFeaturedProviders = async () => {
+    const cookieStore = await cookies()
     try {
         const response = await fetch(`${env.BACKEND_URL}/api/v1/home/featured-providers`, {
             headers: {

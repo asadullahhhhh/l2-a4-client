@@ -2,6 +2,8 @@ import SubCartPage from "@/modules/cartItems/cartpage";
 import { cartService } from "@/service/cart.service"
 import { userService } from "@/service/user.service";
 
+export const dynamic = "force-dynamic";
+
 const CartPage = async () => {
 
     const {data} = await cartService.getUserCart()

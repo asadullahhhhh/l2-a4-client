@@ -37,7 +37,7 @@ export default function ProfileDetailsPage({ user }: { user: any }) {
       image: "",
     },
     validators: {
-      onSubmit: profileSchema,
+      onSubmit: profileSchema as any,
     },
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Updating profile...");
